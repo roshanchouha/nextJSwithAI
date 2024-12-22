@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import dotenv from 'dotenv';
+dotenv.config();
 
 type ConnectionObject = {
   isConnected?:number 
@@ -14,8 +16,9 @@ const connection:ConnectionObject = {}
      }
 
    try {
-      const db =  await mongoose.connect(process.env.MONGODB_URL || '' ,{}) 
-       console.log("db,connection", db, db.connections)
+      console.log(" process.env.MONGODB_URL=====>",process.env.MONGODB_URL)
+      const db =  await mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost:27017' , {} ) 
+      //  console.log("db connection", db.connections)
        connection.isConnected = db.connections[0].readyState;
 
    }catch (err) {
