@@ -7,7 +7,7 @@ interface EmailTemplateProps {
   username: string;
 }
 
-const VerificationEmailTemplate: React.FC<EmailTemplateProps> = ({ username ,otp }) => (
+const VerificationEmailTemplate: React.FC<EmailTemplateProps> = ({ username, otp }) => (
   <Html>
     <Head />
     <Body style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#f9f9f9', margin: 0, padding: 0 }}>

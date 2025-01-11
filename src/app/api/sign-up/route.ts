@@ -35,13 +35,15 @@ export async function POST( request: Request){
                   const hasedPassword = await bcrypt.hash(password,10)
                   existingUserByEmail.password = hasedPassword
                   existingUserByEmail.verifyCode = verifyCode;
-                  existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 36000000)
+                 existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 36000000).toString()
+                 
+                 console.log("existingUserByEmail",existingUserByEmail)
                   await existingUserByEmail.save()
               }
         }else{
           const hasedPassword = await bcrypt.hash(password ,10)
           const expiryDate = new Date()
-           expiryDate.setHours(expiryDate.getHours() + 1);
+           expiryDate.setHours(expiryDate.getHours() + 1).toString();
 
          const newUser =  new UserModel({
             username,
@@ -55,7 +57,7 @@ export async function POST( request: Request){
             messages: [],
             
            })
-
+           console.log("new user",newUser, "expiration time ", expiryDate)
            await newUser.save()
           }
         //send verification 

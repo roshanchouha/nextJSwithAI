@@ -1,4 +1,5 @@
 import mongoose , {Schema , Document} from "mongoose";
+import { string } from "zod";
 
 export  interface Message extends Document{
     content : string;
@@ -22,7 +23,7 @@ export interface User extends Document{
     email : string ;
     password : string;
     verifyCode : string;
-    verifyCodeExpiry: Date;
+    verifyCodeExpiry: string;
     isVerified : boolean;
     isAcceptingMessage : boolean;
     messages : Message[]
@@ -52,7 +53,7 @@ const UserScheme: Schema<User> = new Schema({
     required : [ true, "verify code"]
    },
    verifyCodeExpiry : {
-     type : Date,
+     type : String,
      required : [ true, "Verify code Expiry is required"]
     },
     isVerified : {
