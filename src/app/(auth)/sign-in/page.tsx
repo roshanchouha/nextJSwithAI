@@ -22,9 +22,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from '@/components/ui/input'
 import { Loader2 } from 'lucide-react'
-
-
-
+import { signInSchema } from '@/schemas/signInSchema'
+import { signIn } from 'next-auth/react'
 
 const page = () => {
   const [userName, setUserName] = useState("")
@@ -36,54 +35,35 @@ const page = () => {
   const { toast } = useToast()
   const router = useRouter()
 
-  const form = useForm<z.infer<typeof signUpSchema>>({
-    resolver: zodResolver(signUpSchema),
+  const form = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
-      username: "",
-      email: "",
+      identifier: "",
       password: "",
     },
   })
 
-  useEffect(() => {
-    const checkUserName = async () => {
-      if (userName) {
-        setIsCheckingUserName(true)
-        setUsernameMessage('')
-        try {
-          const response = await axios.get(`/api/check-username-unique?username=${userName}`)
-          setUsernameMessage(response.data.message)
-        } catch (error) {
-          const axiosError = error as AxiosError<ApiResponse>;
-
-          setUsernameMessage(axiosError.response?.data.message || "error checking username")
-        } finally {
-          setIsCheckingUserName(false)
-        }
-      }
-    }
-    checkUserName()
-  }, [userName])
-
-
-  const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
+  const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     setIsSubmitting(true)
     try {
-      const response = await axios.post<ApiResponse>(`/api/sign-up`, data)
-      toast({
-        title: 'Success',
-        description: response.data.message,
+      const result = await signIn('credentials', {
+        identifier: data.identifier,
+        password: data.password,
       })
-      router.replace(`/verify/${userName}`)
+      console.log("result", result)
+      if (result?.error) {
+        toast({
+          title: "Login failed",
+          description: " Incorrect password or username",
+          variant: "destructive"
+        })
+      }
+
+      if (result?.url) {
+        router.replace('/dashboard')
+      }
     } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>;
-      const errorMessage = axiosError.response?.data.message
-      console.error("error in sign up", errorMessage)
-      toast({
-        title: 'Error in sign up',
-        description: errorMessage,
-        variant: 'destructive'
-      })
+
     }
     setIsSubmitting(false)
   }
@@ -95,40 +75,20 @@ const page = () => {
 
         <div className='text-center'>
           <h3 className='text-4xl font-extrabold  tracking-tight lg:text-4xl mb-6'> Join Mystery Message</h3>
-          <p className='mb-4'> Sign up start your anonymous adventure</p>
+          <p className='mb-4'> Sign In start your anonymous adventure</p>
         </div>
         <div>
           <FormProvider {...form} >
             <form onSubmit={form.handleSubmit(onSubmit)} >
+
               <FormField
-                name="username"
+                name="identifier"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Email/Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="username"
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e)
-                          debounce(e.target.value)
-                        }}
-                      />
-                    </FormControl>
-                    {isCheckingUserName && <Loader2 className='animate-spin' />}
-                    <p className={`text-sm ${usernameMessage === 'Username is unique' ? 'text-green-500' : 'text-red-500'} `}> {usernameMessage}</p>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name="email"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="email"
+                      <Input type="email" placeholder="email/username"
                         {...field}
                       />
                     </FormControl>
@@ -157,7 +117,7 @@ const page = () => {
               <Button type='submit' className='mt-2'>{
                 isSubmitting ? (<>
                   <Loader2 className='mr-2 h-4 w-4 animate-spin'> Please wait</Loader2>
-                </>) : ('Sign-up')
+                </>) : ('Sign-in')
               }</Button>
             </form>
           </FormProvider>

@@ -54,7 +54,7 @@ const UserScheme: Schema<User> = new Schema({
    },
    verifyCodeExpiry : {
      type : String,
-     required : [ true, "Verify code Expiry is required"]
+     required : [ false, "Verify code Expiry is required"]
     },
     isVerified : {
          type : Boolean,
