@@ -1,0 +1,27 @@
+[
+    {
+        "title": "message from user123",
+        "content": "How are you doing today?",
+        "received" : "10 minutes ago"
+    },
+    {
+        "title": "message from user456",
+        "content": "I'm doing great, thank you for asking!",
+        "received" : "5 minutes ago"    
+    },
+    {
+        "title": "message from user789",
+        "content": "I'm having a bit of trouble with my laptop. Can you help me troubleshoot?",
+        "received" : "20 minutes ago"    
+    },
+    {
+        "title": "message from user1011",
+        "content": "I'm feeling stressed today. What can I do to relax?",
+        "received" : "1 hour ago"
+    },
+    {
+        "title": "message from user1213",
+        "content": "I've been feeling really tired lately. Any suggestions for a good breakfast?",
+        "received" : "2 hours ago"
+    }
+]

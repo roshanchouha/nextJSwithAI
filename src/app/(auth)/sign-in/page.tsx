@@ -50,7 +50,8 @@ const page = () => {
         identifier: data.identifier,
         password: data.password,
       })
-      console.log("result", result)
+      console.log("result=========>", result)
+      localStorage.setItem('user', JSON.stringify(result))
       if (result?.error) {
         toast({
           title: "Login failed",
@@ -60,10 +61,15 @@ const page = () => {
       }
 
       if (result?.url) {
-        router.replace('/dashboard')
+        router.replace('/')
       }
     } catch (error) {
-
+      const axiosError = error as AxiosError<ApiResponse>
+      toast({
+        title: 'Error',
+        description: axiosError.response?.data.message,
+        variant: 'destructive'
+      })
     }
     setIsSubmitting(false)
   }
